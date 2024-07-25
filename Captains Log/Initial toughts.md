@@ -38,37 +38,35 @@ The config can either be an entry, or contain a list of entries only. It is alwa
 
 The two configs below are equivalent:
 
-```json
-            // Fighter 1 in JSON                                ;; Fighter 1 in clocon
-                                                  |
-{                                                 | (
-  "first-name": "Shrjoum",                        |   (first-name Shrjoum)
-  "last-name": "Suzumov",                         |   (last-name Suzumov)
-  "age": 26,                                      |   (age 26)
-  "gender": "unrevealed",                         |   (gender unrevealed)
-  "favorite-color": "the best color",             |   (favorite-color "the best color")
-  "likes": [                                      |   (likes (
-    "cheese",                                     |       cheese
-    "tea",                                        |       tea
-    "smalltalk"                                   |       smalltalk
-  ],                                              |     ))
-  "dislikes": [                                   |   (dislikes (
-    {                                             |     (
-      "first-name": "Otar",                       |       (first-name Otar)
-      "last-name": "Aperov"                       |       (last-name Aperov)
-    },                                            |     )
-    {                                             |     (
-      "first-name": "Lori",                       |       (first-name Lori)
-      "last-name": "Dzu"                          |       (last-name Dzu)
-    }                                             |     )
-  ]                                               |   ))
-}                                                 | )
+```
+{ // Fighter 1 in JSON                        |     ( ;; Fighter 1 in clocon
+  "first-name": "Shrjoum",                    |       (first-name Shrjoum)
+  "last-name": "Suzumov",                     |       (last-name Suzumov)
+  "age": 26,                                  |       (age 26)
+  "gender": "unrevealed",                     |       (gender unrevealed)
+  "favorite-color": "the best color",         |       (favorite-color "the best color")
+  "likes": [                                  |       (likes (
+    "cheese",                                 |           cheese
+    "tea",                                    |           tea
+    "smalltalk"                               |           smalltalk
+  ],                                          |         ))
+  "dislikes": [                               |       (dislikes (
+    {                                         |         (
+      "first-name": "Otar",                   |           (first-name Otar)
+      "last-name": "Aperov"                   |           (last-name Aperov)
+    },                                        |         )
+    {                                         |         (
+      "first-name": "Lori",                   |           (first-name Lori)
+      "last-name": "Dzu"                      |           (last-name Dzu)
+    }                                         |         )
+  ]                                           |       ))
+}                                             |     )
 ```
 
 In clocon it will probably look more like this:
 
 ```scheme
-( ;; Fighter 1 in Clocon
+( ;; Fighter 1 in clocon
   (first-name Shrjoum)
   (last-name Suzumov)
   (age 26)
