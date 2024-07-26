@@ -1,7 +1,7 @@
 clocon.code-workspace
 .lsp/
 .clj-kondo/
-
+**/.calva/
 /target
 /classes
 /checkouts
