@@ -18,7 +18,7 @@ The second element of an entry, henceforth *the value*, can be an atom or a list
 
 Note that the *conventional* syntax can be used for strings.
 
-The *value* is interpreted as an object if it contains only entries.
+The *value* is interpreted as an object if it is a list of entries.
 
 ```scheme
 (balance
