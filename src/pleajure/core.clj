@@ -1,7 +1,6 @@
-(ns clocon.core
+(ns pleajure.core
   (:gen-class))
 
 (defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
+  [& _]
   (println (load-string (str "'" (slurp "resources/test.plj")))))

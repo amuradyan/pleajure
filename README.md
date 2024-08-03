@@ -1,4 +1,4 @@
-# clocon 👠
+# pleajure 👠
 
 A config tool in Clojure.
 

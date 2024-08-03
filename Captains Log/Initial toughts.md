@@ -39,7 +39,7 @@ The config can either be an entry, or contain a list of entries only. It is alwa
 The two configs below are equivalent:
 
 ```
-{ // Fighter 1 in JSON                        |     ( ;; Fighter 1 in clocon
+{ // Fighter 1 in JSON                        |     ( ;; Fighter 1 in pleajure
   "first-name": "Shrjoum",                    |       (first-name Shrjoum)
   "last-name": "Suzumov",                     |       (last-name Suzumov)
   "age": 26,                                  |       (age 26)
@@ -63,10 +63,10 @@ The two configs below are equivalent:
 }                                             |     )
 ```
 
-In clocon it will probably look more like this:
+In pleajure it will probably look more like this:
 
 ```scheme
-( ;; Fighter 1 in clocon
+( ;; Fighter 1 in pleajure
   (first-name Shrjoum)
   (last-name Suzumov)
   (age 26)
