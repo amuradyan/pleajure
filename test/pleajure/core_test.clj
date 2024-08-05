@@ -1,9 +1,12 @@
 (ns pleajure.core-test
-  (:require [clojure.test :refer [testing is]]))
+  (:require [clojure.test :refer [is testing]]
+            [pleajure.core :refer [parse-entry]]))
 
-;; The first element of an entry, henceforth *the name*,  can only be an atom.
-;; The second element of an entry, henceforth *the value*, can be an atom or a list, e.g.
-
-(testing "Pleajure"
-  (testing "that the first element of an entry can only be an atom"
-    (is (= 5 6))))
+(testing "That in pleajure"
+  (testing "the name of an entry can only be an atom"
+    (is (= (parse-entry '(:name :surname)) [:entry :name :surname]))
+    (is (=
+         (parse-entry '(:ogre {:name "Lactazar" :age 15}))
+         [:entry :ogre {:name "Lactazar" :age 15}]))
+    (is (= (parse-entry '({:name "Pete"} :whatever)) [:error :entry-name-not-atom]))
+    (is (= (parse-entry '([:name] :whatever)) [:error :entry-name-not-atom]))))
