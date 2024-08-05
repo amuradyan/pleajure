@@ -22,12 +22,15 @@
 
 (testing "That the pleajure config can either be"
   (testing "an entry"
-    (is (= (parse-config '(:name "Pete")) [:config {:name "Pete"}])))
+    (is (=
+         (parse-config '(:name "Pete"))
+         [:config {:name "Pete"}])))
   (testing "a list of entries"
     (is false))
   (testing "or invalid"
-    (is (= (parse-config '(d (a b) c)) [:error :invalid-config]))))
-
+    (is (=
+         (parse-config '(d (a b) c))
+         [:error :invalid-config]))))
 
 (testing "That we are able to distinguish entries"
   (is (= (entry? '(name surname)) true))
