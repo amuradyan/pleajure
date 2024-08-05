@@ -23,7 +23,7 @@ The *value* is interpreted as an object if it is a list of entries.
 ```scheme
 (balance
   ((debit 100)
-    (credit 200)))
+   (credit 200)))
 ```
 
 It is interpreted as a list otherwise.
