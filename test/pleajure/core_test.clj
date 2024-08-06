@@ -12,13 +12,13 @@
          [:entry {:ogre {:name "Lactazar" :age 15}}]))
     (is (=
          (parse-entry '(:ogre {:name "Lactazar" :age 15} :nope))
-         [:error :entry-not-a-pair]))
+         [:error :entry-is-not-a-pair]))
     (is (=
          (parse-entry '({:name "Pete"} :whatever))
-         [:error :entry-name-not-atom]))
+         [:error :entry-name-is-not-atom]))
     (is (=
          (parse-entry '([:name] :whatever))
-         [:error :entry-name-not-atom]))))
+         [:error :entry-name-is-not-atom]))))
 
 (testing "That the pleajure config can either be"
   (testing "an entry"
@@ -38,5 +38,6 @@
 (testing "That we are able to distinguish entries"
   (is (= (consider-entry '(name surname)) :valid-entry))
   (is (= (consider-entry '(ogre {name "Lactazar" age 15})) :valid-entry))
-  (is (= (consider-entry '({name "Pete"} whatever)) [:error :entry-name-not-atom]))
-  (is (= (consider-entry '(whatever name name)) [:error :entry-not-a-pair])))
+  (is (= (consider-entry '({name "Pete"} whatever)) [:error :entry-name-is-not-atom]))
+  (is (= (consider-entry '(whatever name name)) [:error :entry-is-not-a-pair])))
+

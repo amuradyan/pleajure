@@ -1,7 +1,11 @@
 (ns pleajure.core
-  (:gen-class)
-  (:require [clojure.inspector :refer [atom?]]))
+  (:gen-class))
 
+(defn atom? [subject]
+  (or
+   (instance? clojure.lang.Symbol subject)
+   (instance? clojure.lang.Keyword subject)
+   (instance? clojure.lang.Atom subject)))
 
 (defn consider-entry
   [entry]
@@ -18,8 +22,8 @@
       :valid-entry [:entry {(keyword name) value}]
       entry-validity)))
 
-(defn entry? [raw-entry]
-  (= :valid-entry (consider-entry raw-entry)))
+(defn entry? [subject]
+  (= :valid-entry (consider-entry subject)))
 
 (defn parse-config
   [config]
