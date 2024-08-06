@@ -3,17 +3,23 @@
   (:require [clojure.inspector :refer [atom?]]))
 
 
-(defn parse-entry
+(defn consider-entry
   [entry]
-  (let [[name value] entry]
-    (cond
-      (not (= (count entry) 2)) [:error :not-an-entry]
-      (atom? name) [:entry {name value}]
-      :else [:error :entry-name-not-atom])))
+  (cond
+    (not (= (count entry) 2)) [:error :entry-is-not-a-pair]
+    (not (atom? (first entry))) [:error :entry-name-is-not-atom]
+    :else :valid-entry))
 
-(defn entry?
-  [entry]
-  (= (first (parse-entry entry)) :entry))
+(defn parse-entry
+  [raw-entry]
+  (let [[name value] raw-entry
+        entry-validity (consider-entry raw-entry)]
+    (case entry-validity
+      :valid-entry [:entry {(keyword name) value}]
+      entry-validity)))
+
+(defn entry? [raw-entry]
+  (= :valid-entry (consider-entry raw-entry)))
 
 (defn parse-config
   [config]
