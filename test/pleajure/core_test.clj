@@ -2,28 +2,24 @@
   (:require [clojure.test :refer [is testing]]
             [pleajure.core :refer [consider-entry
                                    interpret
-                                   parse-config
-                                   parse-entry]]))
+                                   parse-config]]))
 
 (testing "That in pleajure"
   (testing "the name of an entry can only be an atom"
     (is (=
-         (parse-entry '(name surname))
+         (interpret '(name surname))
          [:entry {:name :surname}]))
     (is (=
-         (parse-entry '(number 2))
+         (interpret '(number 2))
          [:entry {:number 2}]))
     (is (=
-         (parse-entry '(ogre ((name "Lactazar") (age 15))))
+         (interpret '(ogre ((name "Lactazar") (age 15))))
          [:entry {:ogre {'name "Lactazar" :age 15}}]))
     (is (=
-         (parse-entry '(ogre ((name "Lactazar") (age 15)) :nope))
+         (consider-entry '(ogre ((name "Lactazar") (age 15)) :nope))
          [:error :entry-is-not-a-pair]))
     (is (=
-         (parse-entry '((name "Pete") whatever))
-         [:error :entry-name-is-not-atom]))
-    (is (=
-         (parse-entry '((name) whatever))
+         (consider-entry '((name) whatever))
          [:error :entry-name-is-not-atom]))))
 
 (testing "That the pleajure config can either be"
@@ -47,8 +43,12 @@
   (is (= (consider-entry '((name "Pete") whatever)) [:error :entry-name-is-not-atom]))
   (is (= (consider-entry '(whatever name name)) [:error :entry-is-not-a-pair])))
 
-(testing "That pleajure interprets"
-  (testing "symbols that could be keywords as keywords"
-    (is (interpret 'name) :name))
+(testing "That pleajure interprets symbols that could be"
+  (testing "keywords as keywords"
+    (is (interpret 'name) [:keyword :name]))
+  (testing "numbers as numbers"
+    (is (interpret '2) [:number 2]))
+  (testing "strings as strings"
+    (is (interpret '"name") [:string "name"]))
   (testing "unknown forms systematically"
     (is (interpret '(name)) [:error :unknown-form '(name)])))

@@ -10,34 +10,33 @@
 (defn consider-entry
   [entry]
   (cond
-    (not (= (count entry) 2)) [:error :entry-is-not-a-pair]
     (not (atom? (first entry))) [:error :entry-name-is-not-atom]
+    (not (= (count entry) 2)) [:error :entry-is-not-a-pair]
     :else :valid-entry))
-
-(defn interpret
-  [form]
-  (cond
-    (symbol? form) (keyword form)
-    (string? form) form
-    (number? form) form
-    :else [:error :unknown-form form]))
-
-(defn parse-entry
-  [raw-entry]
-  (let [[raw-name raw-value] raw-entry
-        entry-validity (consider-entry raw-entry)]
-    (case entry-validity
-      :valid-entry [:entry {(interpret raw-name) (interpret raw-value)}]
-      entry-validity)))
 
 (defn entry? [subject]
   (= :valid-entry (consider-entry subject)))
 
+(defn interpret
+  [form]
+  (cond
+    (symbol? form) [:keyword (keyword form)]
+    (string? form) [:string form]
+    (number? form) [:number form]
+    (entry? form) (let [[name-interpretation interpreted-name] (interpret (first form))
+                        [value-interpretation interreted-value] (interpret (second form))]
+                    (case [name-interpretation value-interpretation]
+                      [[:error _] _]  [:error :unknown-form form]
+                      [_ [:error _]]  [:error :unknown-form form]
+                      [:entry {interpreted-name interreted-value}]))
+    :else [:error :unknown-form form]))
+
 (defn parse-config
   [config]
-  (cond
-    (entry? config) [:config (second (parse-entry config))]
-    :else [:error :invalid-config]))
+  (let [[status value] (interpret config)]
+    (case status
+      :entry [:config value]
+      [:error :invalid-config])))
 
 (defn -main
   [& _]
