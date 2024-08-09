@@ -14,12 +14,20 @@
     (not (atom? (first entry))) [:error :entry-name-is-not-atom]
     :else :valid-entry))
 
+(defn interpret
+  [form]
+  (cond
+    (symbol? form) (keyword form)
+    (string? form) form
+    (number? form) form
+    :else [:error :unknown-form form]))
+
 (defn parse-entry
   [raw-entry]
-  (let [[name value] raw-entry
+  (let [[raw-name raw-value] raw-entry
         entry-validity (consider-entry raw-entry)]
     (case entry-validity
-      :valid-entry [:entry {(keyword name) value}]
+      :valid-entry [:entry {(interpret raw-name) (interpret raw-value)}]
       entry-validity)))
 
 (defn entry? [subject]
