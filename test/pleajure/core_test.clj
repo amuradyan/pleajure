@@ -13,6 +13,9 @@
          (interpret '(number 2))
          [:entry {:number 2}]))
     (is (=
+         (interpret '(ogre (one 2 (three) erog)))
+         [:entry [:ogre [:one 2 [:three]] :erog]]))
+    (is (=
          (interpret '(ogre ((name "Lactazar") (age 15))))
          [:entry {:ogre {'name "Lactazar" :age 15}}]))
     (is (=
@@ -38,8 +41,8 @@
          [:error :invalid-config]))))
 
 (testing "That we are able to distinguish entries"
-  (is (= (consider-entry '(name surname)) :valid-entry))
-  (is (= (consider-entry '(ogre {name "Lactazar" age 15})) :valid-entry))
+  (is (= (consider-entry '(name surname)) [:valid-entry '(name surname)]))
+  (is (= (consider-entry '(ogre {name "Lactazar" age 15})) [:valid-entry '(ogre {name "Lactazar" age 15})]))
   (is (= (consider-entry '((name "Pete") whatever)) [:error :entry-name-is-not-atom]))
   (is (= (consider-entry '(whatever name name)) [:error :entry-is-not-a-pair])))
 

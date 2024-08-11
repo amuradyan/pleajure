@@ -12,10 +12,10 @@
   (cond
     (not (atom? (first entry))) [:error :entry-name-is-not-atom]
     (not (= (count entry) 2)) [:error :entry-is-not-a-pair]
-    :else :valid-entry))
+    :else [:valid-entry entry]))
 
 (defn entry? [subject]
-  (= :valid-entry (consider-entry subject)))
+  (= [:valid-entry subject] (consider-entry subject)))
 
 (defn interpret
   [form]
@@ -29,6 +29,7 @@
                       [[:error _] _]  [:error :unknown-form form]
                       [_ [:error _]]  [:error :unknown-form form]
                       [:entry {interpreted-name interreted-value}]))
+    (list? form) [:no :no]
     :else [:error :unknown-form form]))
 
 (defn parse-config
