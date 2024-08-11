@@ -13,8 +13,8 @@
          (interpret '(number 2))
          [:entry {:number 2}]))
     (is (=
-         (interpret '(ogre (one 2 (three) erog)))
-         [:entry [:ogre [:one 2 [:three]] :erog]]))
+         (interpret '(ogre (one 2 (three)) erog))
+         [:list [:ogre [:one 2 [:three]] :erog]]))
     (is (=
          (interpret '(ogre ((name "Lactazar") (age 15))))
          [:entry {:ogre {'name "Lactazar" :age 15}}]))

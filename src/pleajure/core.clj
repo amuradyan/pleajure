@@ -29,7 +29,7 @@
                       [[:error _] _]  [:error :unknown-form form]
                       [_ [:error _]]  [:error :unknown-form form]
                       [:entry {interpreted-name interreted-value}]))
-    (list? form) [:no :no]
+    (list? form) [:list (map (comp second interpret) form)]
     :else [:error :unknown-form form]))
 
 (defn parse-config
