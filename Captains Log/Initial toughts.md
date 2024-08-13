@@ -34,7 +34,14 @@ It is interpreted as a list otherwise.
 
 **NOTE:** Objects are not allowed to contain entries with duplicate names.
 
-The config can either be an entry, or contain a list of entries only. It is always interpreted as an object.
+The config can either be an entry, or contain a list of entries only. It is always expected to be an object, e.g.
+
+    ((mission impossible))
+or
+
+    ((color red)
+     (size 10)
+     (shape circle))
 
 The two configs below are equivalent:
 

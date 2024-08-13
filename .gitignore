@@ -2,6 +2,7 @@ pleajure.code-workspace
 .lsp/
 .clj-kondo/
 **/.calva/
+**/.calva/repl.calva-repl
 /target
 /classes
 /checkouts
