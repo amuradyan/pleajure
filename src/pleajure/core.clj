@@ -1,6 +1,12 @@
 (ns pleajure.core
   (:gen-class))
 
+(defn ???
+  []
+  (throw (ex-info "Not implemented" {})))
+
+(declare interpret-list)
+
 (defn atom? [subject]
   (or
    (instance? clojure.lang.Symbol subject)
@@ -23,14 +29,25 @@
     (symbol? form) [:keyword (keyword form)]
     (string? form) [:string form]
     (number? form) [:number form]
-    (entry? form) (let [[name-interpretation interpreted-name] (interpret (first form))
-                        [value-interpretation interreted-value] (interpret (second form))]
-                    (case [name-interpretation value-interpretation]
-                      [[:error _] _]  [:error :unknown-form form]
-                      [_ [:error _]]  [:error :unknown-form form]
-                      [:entry {interpreted-name interreted-value}]))
-    (list? form) [:list (map (comp second interpret) form)]
+    ;; (entry? form) (let [[name-interpretation interpreted-name] (interpret (first form))
+    ;;                     [value-interpretation interreted-value] (interpret (second form))]
+    ;;                 (case [name-interpretation value-interpretation]
+    ;;                   [[:error _] _]  [:error :unknown-form form]
+    ;;                   [_ [:error _]]  [:error :unknown-form form]
+    ;;                   [:entry {interpreted-name interreted-value}]))
+    (list? form) (interpret-list form)
     :else [:error :unknown-form form]))
+
+(defn interpret-list
+  ([form]
+   (if (nil? form)
+     []
+     (interpret-list form [] {} true)))
+  ([form list-instance map-instance still-a-map?]
+   [:list
+    (map
+     (comp second interpret)
+     form)]))
 
 (defn parse-config
   [config]
