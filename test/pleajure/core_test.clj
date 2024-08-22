@@ -17,13 +17,13 @@
            [:list [:ogre [:one 2 [:three]] :erog]]))
       (is (=
            (interpret '(ogre (name "Lactazar")))
-           [:orge [:name "Lactazar"]]))
+           [:list [:ogre [:name "Lactazar"]]]))
       (is (=
            (interpret '(ogre ((name "Lactazar") (age 15))))
-           [:list (:ogre {:name "Lactazar" :age 15})]))
+           [:list [:ogre {:name "Lactazar" :age 15}]]))
       (is (=
            (interpret '((ogre ((name "Lactazar") (age 15)))))
-           [:entry {:ogre {:name "Lactazar" :age 15}}]))
+           [:map {:ogre {:name "Lactazar" :age 15}}]))
       (is (=
            (consider-entry 'a)
            [:error :entry-is-not-a-pair])))))
@@ -68,7 +68,7 @@
          (consider-entry '(whatever name name))
          [:error :entry-is-not-a-pair]))))
 
-(deftest  list-interpreter []
+(deftest list-interpreter []
   (testing "That pleajure can express"
     (testing "plain lists"
       (is (=
@@ -90,7 +90,7 @@
            [:map {:a :b :c :d}])))
     (testing "and it responds with the appropriate type" ; This checks the implentaion, not the use case
       (is (=
-           (interpret-list '() [] {:f :G} true)
+           (interpret-list '() [:f :G] {:f :G} true)
            [:map {:f :G}]))
       (is (=
            (interpret-list '() [:f :G] {} false)
@@ -110,7 +110,7 @@
       (is (=
            (interpret '"name")
            [:string "name"])))
-    (testing "unknown forms systematically"
+    (testing "lists as lists"
       (is (=
            (interpret '(name))
-           [:error :unknown-form '(name)])))))
+           [:list [:name]])))))

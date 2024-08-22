@@ -1,10 +1,6 @@
 (ns pleajure.core
   (:gen-class))
 
-(defn ???
-  []
-  (throw (ex-info "Not implemented" {})))
-
 (declare interpret-list)
 
 (defn atom? [subject]
@@ -32,15 +28,15 @@
 
 (defn interpret-list
   ([form]
-   (if (empty? form)
-     [:list []]
-     (interpret-list form [] {} true)))
+   (interpret-list form [] {} true))
 
   ([form list-instance map-instance probable-map?]
    (cond
-     (empty? form) (if probable-map?
-                     [:map map-instance]
-                     [:list list-instance])
+     (empty? form) (let [first-round? (empty? list-instance)]
+                     (cond
+                       (and probable-map? first-round?) [:list list-instance]
+                       probable-map? [:map map-instance]
+                       :else [:list list-instance]))
      :else (let
             [[current & rest] form
              [errors? _] (consider-entry current)
