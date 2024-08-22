@@ -59,7 +59,10 @@
 
 (defn parse-from-file
   [file]
-  (parse-config (load-string (str "'" (slurp file)))))
+  (try
+    (parse-config (load-string (str "'" (slurp file))))
+    (catch Exception e
+      [:error :file-read-failed (ex-message e)])))
 
 (defn -main
   [& _]

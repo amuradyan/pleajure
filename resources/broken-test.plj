@@ -1,0 +1,13 @@
+( ;; Fighter 1 in pleajure
+  (first-name Shrjoum)
+  (last-name Suzumov)
+  (age 26)
+  (gender unrevealed)
+  (favorite-color "the best color")
+  (likes
+    cheese tea smalltalk))
+  (dislikes
+    (((first-name Otar)
+      (last-name Aperov))
+     ((first-name Lori)
+      (last-name Dzu)))))

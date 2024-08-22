@@ -78,7 +78,10 @@
            [:list [:a :b :c]]))
       (is (=
            (interpret-list '())
-           [:list []])))
+           [:list []]))
+      (is (=
+           (interpret-list '(()))
+           [:list [[]]])))
     (testing "nested lists"
       (is (=
            (interpret-list '((a b) c))
@@ -131,4 +134,10 @@
            :dislikes [{:first-name :Otar,
                        :last-name :Aperov}
                       {:first-name :Lori,
-                       :last-name :Dzu}]}]))))
+                       :last-name :Dzu}]}])))
+  (testing "And gracefully fail on invalid ones"
+    (is (=
+         (parse-from-file "resources/broken-test.plj")
+         [:error :file-read-failed "Syntax error compiling at (9:3)."]))))
+
+
