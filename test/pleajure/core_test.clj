@@ -1,7 +1,7 @@
 (ns pleajure.core-test
   (:require [clojure.test :refer [deftest is testing]]
             [pleajure.core :refer [consider-entry interpret interpret-list
-                                   parse-config]]))
+                                   parse-config parse-from-file]]))
 
 (deftest interpreter []
   (testing "That in pleajure"
@@ -38,7 +38,9 @@
            (parse-config '((name Pete)))
            [:config {:name :Pete}])))
     (testing "a list of entries"
-      (is false))
+      (is (=
+           (parse-config '((name Pete) (age 15)))
+           [:config {:name :Pete :age 15}])))
     (testing "or invalid"
       (is (=
            (parse-config '(d (a b) c))
@@ -114,3 +116,19 @@
       (is (=
            (interpret '(name))
            [:list [:name]])))))
+
+(deftest config-from-file []
+  (testing "That pleajure can parse a config file"
+    (is (=
+         (parse-from-file "resources/test.plj")
+         [:config
+          {:first-name :Shrjoum,
+           :last-name :Suzumov,
+           :age 26,
+           :gender :unrevealed,
+           :favorite-color "the best color",
+           :likes [:cheese :tea :smalltalk],
+           :dislikes [{:first-name :Otar,
+                       :last-name :Aperov}
+                      {:first-name :Lori,
+                       :last-name :Dzu}]}]))))

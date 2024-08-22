@@ -57,6 +57,10 @@
       :map [:config value]
       [:error :invalid-config])))
 
+(defn parse-from-file
+  [file]
+  (parse-config (load-string (str "'" (slurp file)))))
+
 (defn -main
   [& _]
   (println (load-string (str "'" (slurp "resources/test.plj")))))
