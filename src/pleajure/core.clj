@@ -47,7 +47,7 @@
              still-probable-map? (and probable-map? (not (= errors? :error)))]
              (if still-probable-map?
                (let [[_ interpreted-name] (interpret (first current))
-                     [_ interreted-value] (interpret (second current))
+                     [_ interreted-value] (interpret (second current)) ;; What about the checks here?
                      updated-list-instance (conj list-instance [interpreted-name interreted-value])
                      updated-map-instance (assoc map-instance interpreted-name interreted-value)]
                  (interpret-list rest updated-list-instance updated-map-instance still-probable-map?))
@@ -58,7 +58,7 @@
   [config]
   (let [[status value] (interpret config)]
     (case status
-      :entry [:config value]
+      :map [:config value]
       [:error :invalid-config])))
 
 (defn -main
