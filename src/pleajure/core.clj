@@ -33,7 +33,7 @@
   ([form list-instance map-instance probable-map?]
    (cond
      (empty? form) (let [first-round? (empty? list-instance)]
-                     (cond
+                     (cond ;; This is a bit of a mess, but it works
                        (and probable-map? first-round?) [:list list-instance]
                        probable-map? [:map map-instance]
                        :else [:list list-instance]))
@@ -63,7 +63,3 @@
     (parse-config (load-string (str "'" (slurp file))))
     (catch Exception e
       [:error :file-read-failed (ex-message e)])))
-
-(defn -main
-  [& _]
-  (println (load-string (str "'" (slurp "resources/test.plj")))))
