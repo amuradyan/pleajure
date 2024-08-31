@@ -1,143 +1,68 @@
 (ns pleajure.core-test
   (:require [clojure.test :refer [deftest is testing]]
-            [pleajure.core :refer [consider-entry interpret interpret-list
+            [pleajure.core :refer [interpret
                                    parse-config parse-from-file]]))
 
-(deftest interpreter []
-  (testing "That in pleajure"
-    (testing "the name of an entry can only be an atom"
+(deftest parsing-configs []
+  (testing "That a config is effectively a list"
+    (is (=
+         (parse-config '(name Pete age 15))
+         [:config [:name :Pete :age 15]])))
+  (testing "That what's not a list, is not a config"
+    (is (=
+         (parse-config 'not-a-config)
+         [:error :invalid-config]))))
+
+(deftest interpreting-forms []
+  (testing  "That pleajure interprets symbols that"
+    (testing "could be keywords as keywords"
       (is (=
-           (interpret '((name surname)))
-           [:map {:name :surname}]))
+           (interpret 'name)
+           [:keyword :name])))
+    (testing "could be numbers as numbers"
       (is (=
-           (interpret '(number 2))
-           [:list [:number 2]]))
+           (interpret '2)
+           [:number 2])))
+    (testing "could be strings as strings"
+      (is (=
+           (interpret '"name")
+           [:string "name"])))
+    (testing "could be lists as lists"
+      (is (=
+           (interpret '(name))
+           [:list [:name]]))
       (is (=
            (interpret '(ogre (one 2 (three)) erog))
            [:list [:ogre [:one 2 [:three]] :erog]]))
       (is (=
-           (interpret '(ogre (name "Lactazar")))
-           [:list [:ogre [:name "Lactazar"]]]))
+           (interpret '(ogre (name "Lactazar") (age 15)))
+           [:list [:ogre [:name "Lactazar"] [:age 15]]])))
+    (testing "could be unknown forms as errors"
       (is (=
-           (interpret '(ogre ((name "Lactazar") (age 15))))
-           [:list [:ogre {:name "Lactazar" :age 15}]]))
+           (interpret ':name)
+           [:error :unknown-form :name]))
       (is (=
-           (interpret '((ogre ((name "Lactazar") (age 15)))))
-           [:map {:ogre {:name "Lactazar" :age 15}}]))
-      (is (=
-           (consider-entry 'a)
-           [:error :entry-is-not-a-pair])))))
+           (interpret '{:name "name"})
+           [:error :unknown-form {:name "name"}])))))
 
-(deftest config-parser []
-  (testing "That the pleajure config can either be"
-    (testing "an entry"
-      (is (=
-           (parse-config '((name "Pete")))
-           [:config {:name "Pete"}]))
-      (is (=
-           (parse-config '((name Pete)))
-           [:config {:name :Pete}])))
-    (testing "a list of entries"
-      (is (=
-           (parse-config '((name Pete) (age 15)))
-           [:config {:name :Pete :age 15}])))
-    (testing "or invalid"
-      (is (=
-           (parse-config '(d (a b) c))
-           [:error :invalid-config])))))
-
-(deftest entry-filter []
-  (testing "That we are able to distinguish entries"
-    (is (=
-         (consider-entry 'name)
-         [:error :entry-is-not-a-pair]))
-    (is (=
-         (consider-entry '(ogre ((name "Lactazar") (age 15)) :nope))
-         [:error :entry-is-not-a-pair]))
-    (is (=
-         (consider-entry '((name) whatever))
-         [:error :entry-name-is-not-atom]))
-    (is (=
-         (consider-entry '(name surname))
-         [:valid-entry '(name surname)]))
-    (is (=
-         (consider-entry '(ogre {name "Lactazar" age 15}))
-         [:valid-entry '(ogre {name "Lactazar" age 15})]))
-    (is (=
-         (consider-entry '((name "Pete") whatever))
-         [:error :entry-name-is-not-atom]))
-    (is (=
-         (consider-entry '(whatever name name))
-         [:error :entry-is-not-a-pair]))))
-
-(deftest list-interpreter []
-  (testing "That pleajure can express"
-    (testing "plain lists"
-      (is (=
-           (interpret-list '(a b c))
-           [:list [:a :b :c]]))
-      (is (=
-           (interpret-list '())
-           [:list []]))
-      (is (=
-           (interpret-list '(()))
-           [:list [[]]])))
-    (testing "nested lists"
-      (is (=
-           (interpret-list '((a b) c))
-           [:list [[:a :b] :c]])))
-    (testing "plain maps"
-      (is (=
-           (interpret-list '((a b)))
-           [:map {:a :b}]))
-      (is (=
-           (interpret-list '((a b) (c d)))
-           [:map {:a :b :c :d}])))
-    (testing "and it responds with the appropriate type" ; This checks the implentaion, not the use case
-      (is (=
-           (interpret-list '() [:f :G] {:f :G} true)
-           [:map {:f :G}]))
-      (is (=
-           (interpret-list '() [:f :G] {} false)
-           [:list [:f :G]])))))
-
-(deftest keywords []
-  (testing  "That pleajure interprets symbols that could be"
-    (testing "keywords as keywords"
-      (is (=
-           (interpret 'name)
-           [:keyword :name])))
-    (testing "numbers as numbers"
-      (is (=
-           (interpret '2)
-           [:number 2])))
-    (testing "strings as strings"
-      (is (=
-           (interpret '"name")
-           [:string "name"])))
-    (testing "lists as lists"
-      (is (=
-           (interpret '(name))
-           [:list [:name]])))))
-
-(deftest config-from-file []
+(deftest reading-config-from-file []
   (testing "That pleajure can parse a config file"
     (is (=
          (parse-from-file "resources/test.plj")
          [:config
-          {:first-name :Shrjoum,
+          [:first-name :Shrjoum,
            :last-name :Suzumov,
            :age 26,
            :gender :unrevealed,
            :favorite-color "the best color",
            :likes [:cheese :tea :smalltalk],
-           :dislikes [{:first-name :Otar,
-                       :last-name :Aperov}
-                      {:first-name :Lori,
-                       :last-name :Dzu}]}])))
+           :dislikes [[:first-name :Otar,
+                       :last-name :Aperov]
+                      [:first-name :Lori,
+                       :last-name :Dzu]]]])))
   (testing "And gracefully fail on invalid ones"
     (is (=
          (parse-from-file "resources/broken-test.plj")
-         [:error :file-read-failed "Syntax error compiling at (9:3)."]))))
+         [:error :file-read-failed "Syntax error reading source at (14:1)."]))))
 
 
