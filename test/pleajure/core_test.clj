@@ -1,6 +1,6 @@
 (ns pleajure.core-test
   (:require [clojure.test :refer [deftest is testing]]
-            [pleajure.core :refer [interpret
+            [pleajure.core :refer [interpret get-at
                                    parse-config parse-from-file]]))
 
 (deftest parsing-configs []
@@ -50,19 +50,52 @@
     (is (=
          (parse-from-file "resources/test.plj")
          [:config
-          [:first-name :Shrjoum,
-           :last-name :Suzumov,
-           :age 26,
-           :gender :unrevealed,
-           :favorite-color "the best color",
-           :likes [:cheese :tea :smalltalk],
-           :dislikes [[:first-name :Otar,
+          [:first-name :Shrjoum
+           :last-name :Suzumov
+           :age 26
+           :gender :unrevealed
+           :favorite-color "the best color"
+           :likes [:cheese :tea :smalltalk]
+           :dislikes [[:first-name :Otar
                        :last-name :Aperov]
-                      [:first-name :Lori,
+                      [:first-name :Lori
                        :last-name :Dzu]]]])))
   (testing "And gracefully fail on invalid ones"
     (is (=
          (parse-from-file "resources/broken-test.plj")
          [:error :file-read-failed "Syntax error reading source at (14:1)."]))))
 
-
+;; ^:test-refresh/focus
+(deftest fetching-values []
+  (let [config [:config
+                [:valid
+                 [:nested
+                  [:path 26]]
+                 :valid-path "value-2"]]]
+    (testing "That pleajure can fetch a values at a given path"
+      (is (=
+           (get-at config [])
+           config))
+      (is (=
+           (get-at config [:valid :nested :path])
+           26))
+      (is (=
+           (get-at config [:valid-path])
+           "value-2")))
+    (testing "And gracefully fail on invalid paths"
+      (is (=
+           (get-at [:config [:valid :path]] [:broken :path])
+           :invalid-path))
+      (is (=
+           (get-at [] [:broken :path])
+           :invalid-path)))
+    (testing "And gracefully fail on invalid configs"
+      (is (=
+           (get-at [:not :a :valid-config] [:a])
+           :not-a-config))
+      (is (=
+           (get-at [:config] [:a])
+           :not-a-config))
+      (is (=
+           (get-at [:config :whatever] [:a])
+           :not-a-config)))))

@@ -27,3 +27,18 @@
     (parse-config (load-string (str "'" (slurp file))))
     (catch Exception e
       [:error :file-read-failed (ex-message e)])))
+
+(defn get-at
+  [config path]
+  (cond
+    (empty? path) config
+    (empty? config) :invalid-path
+    (or
+     (< (count config) 2)
+     (not (= (first config) :config))
+     (not (list? (second config)))) :not-a-config
+    :else
+    (let [[first-value & rest-of-the-values] (second config)
+          [first-key & rest-of-the-keys] path]
+      (cond
+        :else :???))))
