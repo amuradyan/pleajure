@@ -31,12 +31,17 @@
 (defn get-at
   [config path]
   (cond
+    (or
+     (not (vector? config))
+     (and
+      (not (vector? path))
+      (not (keyword? path)))) :invalid-arguments
     (empty? path) config
     (empty? config) :invalid-path
     (or
      (< (count config) 2)
      (not (= (first config) :config))
-     (not (list? (second config)))) :not-a-config
+     (not (vector? (second config)))) :not-a-config
     :else
     (let [[first-value & rest-of-the-values] (second config)
           [first-key & rest-of-the-keys] path]
