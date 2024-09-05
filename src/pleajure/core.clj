@@ -28,6 +28,25 @@
     (catch Exception e
       [:error :file-read-failed (ex-message e)])))
 
+(defn list-lookup
+  [data path]
+  (cond
+    (not (vector? data)) :data-not-a-vector        ;; the sanity checks
+    (not (vector? path)) :path-not-a-vector        ;; the sanity checks
+    (not (keyword? (first path))) :key-not-an-atom ;; the sanity checks
+    (empty? path) data
+    (empty? data) :invalid-path
+    :else (let [[first-value & rv] data
+                [next-value & _] rv
+                [first-key & rk] path
+                rest-of-the-values (into [] rv)
+                rest-of-the-keys (into [] rk)]
+            (cond
+              (= first-key first-value) (if (empty? rest-of-the-keys)
+                                          (first rest-of-the-values)
+                                          (list-lookup next-value rest-of-the-keys))
+              :else (list-lookup rest-of-the-values path)))))
+
 (defn get-at
   [config path]
   (cond
@@ -42,8 +61,4 @@
      (< (count config) 2)
      (not (= (first config) :config))
      (not (vector? (second config)))) :not-a-config
-    :else
-    (let [[first-value & rest-of-the-values] (second config)
-          [first-key & rest-of-the-keys] path]
-      (cond
-        :else :???))))
+    :else (list-lookup (second config) path)))

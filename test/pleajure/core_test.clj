@@ -1,6 +1,6 @@
 (ns pleajure.core-test
   (:require [clojure.test :refer [deftest is testing]]
-            [pleajure.core :refer [interpret get-at
+            [pleajure.core :refer [interpret get-at list-lookup
                                    parse-config parse-from-file]]))
 
 (deftest parsing-configs []
@@ -67,28 +67,24 @@
 
 ;; ^:test-refresh/focus
 (deftest fetching-values []
-  (let [config [:config
-                [:valid
-                 [:nested
-                  [:path 26]]
-                 :valid-path "value-2"]]]
+  (let [data [:valid [:nested [:path 26]] :valid-path "value-2"]
+        config [:config data]]
     (testing "That pleajure can fetch a values at a given path"
       (is (=
            (get-at config [])
            config))
-     ;;  (is (=
-     ;;       (get-at config [:valid :nested :path])
-     ;;       26))
-     ;;  (is (=
-     ;;       (get-at config [:valid-path])
-     ;;       "value-2"))
-      )
-    (testing "And gracefully fail on invalid paths"
-     ;;  (is (=
-     ;;       (get-at [:config [:valid :path]] [:broken :path])
-     ;;       :invalid-path))
       (is (=
-           (get-at [] [:broken :path])
+           (list-lookup data [:valid :nested :path])
+           26))
+      (is (=
+           (list-lookup data [:valid-path])
+           "value-2")))
+    (testing "And gracefully fail on invalid paths"
+      (is (=
+           (get-at [:config [:valid :path]] [:broken :path])
+           :invalid-path))
+      (is (=
+           (list-lookup [] [:broken :path])
            :invalid-path)))
     (testing "And gracefully fail on invalid configs"
       (is (=
