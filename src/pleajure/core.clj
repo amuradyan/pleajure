@@ -31,9 +31,9 @@
 (defn list-lookup
   [data path]
   (cond
-    (not (vector? data)) :data-not-a-vector        ;; the sanity checks
-    (not (vector? path)) :path-not-a-vector        ;; the sanity checks
-    (not (keyword? (first path))) :key-not-an-atom ;; the sanity checks
+    (not (vector? data)) :data-not-a-vector        ;; sanity check
+    (not (vector? path)) :path-not-a-vector        ;; sanity check
+    (not (keyword? (first path))) :key-not-an-atom ;; sanity check
     (empty? path) data
     (empty? data) :invalid-path
     :else (let [[first-value & rv] data
