@@ -85,14 +85,17 @@
            :invalid-path))
       (is (=
            (list-lookup [] [:broken :path])
+           :invalid-path))
+      (is (=
+           (list-lookup [:ola] [:ola])
            :invalid-path)))
     (testing "And gracefully fail on invalid configs"
       (is (=
            (get-at [:not :a :valid-config] [:a])
-           :not-a-config))
+           :invalid-config))
       (is (=
            (get-at [:config] [:a])
-           :not-a-config))
+           :invalid-config))
       (is (=
            (get-at [:config :whatever] [:a])
-           :not-a-config)))))
+           :invalid-config)))))

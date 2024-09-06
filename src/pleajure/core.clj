@@ -28,12 +28,18 @@
     (catch Exception e
       [:error :file-read-failed (ex-message e)])))
 
+(defn is-path? [data]
+  (or
+   (keyword? data)
+   (and
+    (vector? data)
+    (every? keyword? data))))
+
 (defn list-lookup
   [data path]
   (cond
-    (not (vector? data)) :data-not-a-vector        ;; sanity check
-    (not (vector? path)) :path-not-a-vector        ;; sanity check
-    (not (keyword? (first path))) :key-not-an-atom ;; sanity check
+    (not (vector? data))  :invalid-data    ;; sanity check
+    (not (is-path? path)) :invalid-path    ;; sanity check
     (empty? path) data
     (empty? data) :invalid-path
     :else (let [[first-value & rv] data
@@ -42,23 +48,27 @@
                 rest-of-the-values (into [] rv)
                 rest-of-the-keys (into [] rk)]
             (cond
-              (= first-key first-value) (if (empty? rest-of-the-keys)
-                                          (first rest-of-the-values)
-                                          (list-lookup next-value rest-of-the-keys))
+              (= first-key first-value)
+              (if (empty? rest-of-the-keys)
+                (if (empty? rest-of-the-values)
+                  :invalid-path
+                  (first rest-of-the-values))
+                (list-lookup next-value rest-of-the-keys))
               :else (list-lookup rest-of-the-values path)))))
+
+(defn is-config?
+  [data]
+  (and
+   (vector? data)
+   (= (count data) 2)
+   (= (first data) :config)
+   (vector? (second data))))
 
 (defn get-at
   [config path]
   (cond
-    (or
-     (not (vector? config))
-     (and
-      (not (vector? path))
-      (not (keyword? path)))) :invalid-arguments
+    (not (is-config? config)) :invalid-config   ;; sanity check
+    (not (is-path? path)) :invalid-path         ;; sanity check
     (empty? path) config
     (empty? config) :invalid-path
-    (or
-     (< (count config) 2)
-     (not (= (first config) :config))
-     (not (vector? (second config)))) :not-a-config
     :else (list-lookup (second config) path)))
