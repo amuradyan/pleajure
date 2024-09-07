@@ -42,18 +42,13 @@
     (not (is-path? path)) :invalid-path    ;; sanity check
     (empty? path) data
     (empty? data) :invalid-path
-    :else (let [[first-value & rv] data
-                [next-value & _] rv
-                [first-key & rk] path
-                rest-of-the-values (into [] rv)
-                rest-of-the-keys (into [] rk)]
-            (if (= first-key first-value)
-              (if (empty? rest-of-the-keys)
-                (if (empty? rest-of-the-values)
-                  :invalid-path
-                  next-value)
-                (list-lookup next-value rest-of-the-keys))
-              (list-lookup rest-of-the-values path)))))
+    :else (if (= (first data) (first path))
+            (if (empty? (rest path))
+              (if (empty? (rest data))
+                :invalid-path
+                (first (rest data)))
+              (list-lookup (first (into [] (rest data))) (into [] (rest path))))
+            (list-lookup (into [] (rest data)) path))))
 
 (defn is-config?
   [data]
