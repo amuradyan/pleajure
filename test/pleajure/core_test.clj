@@ -11,7 +11,7 @@
   (testing "That what's not a list, is not a config"
     (is (=
          (parse-config 'not-a-config)
-         [:error :invalid-config]))))
+         [:error :invalid-raw-config]))))
 
 (deftest interpreting-forms []
   (testing  "That pleajure interprets symbols that"

@@ -12,21 +12,25 @@
       (string? form)  (interpret-string form)
       (number? form)  (interpret-number form)
       (list?   form)  (interpret-list form)
-      :else           [:error :unknown-form form])))
+      :else           [:error :unknown-form form])))  ;; sanity check
 
 (defn parse-config
   [config]
-  (let [[status value] (interpret config)]
-    (case status
-      :list [:config value]
-      [:error :invalid-config])))
+  (cond
+    (not (list? config)) [:error :invalid-raw-config]  ;; sanity check
+    :else (let [[status value] (interpret config)]
+            (case status
+              :list [:config value]
+              [:error :invalid-raw-config]))))
 
 (defn parse-from-file
   [file]
-  (try
-    (parse-config (load-string (str "'" (slurp file))))
-    (catch Exception e
-      [:error :file-read-failed (ex-message e)])))
+  (cond
+    (not (string? file)) :invalid-file-path  ;; sanity check
+    :else (try
+            (parse-config (load-string (str "'" (slurp file))))
+            (catch Exception e
+              [:error :file-read-failed (ex-message e)]))))
 
 (defn is-path? [data]
   (or

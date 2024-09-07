@@ -1,6 +1,8 @@
 (ns pleajure.core-inputs-test
   (:require [clojure.test :refer [deftest are testing]]
-            [pleajure.core :refer [get-at list-lookup is-config? is-path?]]))
+            [pleajure.core :refer [get-at list-lookup is-config?
+                                   is-path? parse-from-file
+                                   parse-config]]))
 
 (deftest config-filter
   (testing "that we know a config when we see one"
@@ -40,3 +42,17 @@
       (list-lookup [:config :whatever]  {:not "a list"})    :invalid-path
       (list-lookup [:config :whatever]  'not-a-list)        :invalid-path
       (list-lookup [:config :whatever]  ["not a keyword"])  :invalid-path)))
+
+(deftest parse-from-file-inputs []
+  (testing "Predictably fail when the path is not a string"
+    (are [actual expected] (= actual expected)
+      (parse-from-file 123)             :invalid-file-path
+      (parse-from-file :not-a-string)   :invalid-file-path
+      (parse-from-file [:not-a-string]) :invalid-file-path)))
+
+(deftest parse-config-inputs []
+  (testing "Predictably fail when the config is not a list"
+    (are [actual expected] (= actual expected)
+      (parse-config 123)            [:error :invalid-raw-config]
+      (parse-config :not-a-list)    [:error :invalid-raw-config]
+      (parse-config [:not-a-list])  [:error :invalid-raw-config])))
