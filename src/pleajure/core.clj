@@ -24,13 +24,17 @@
               [:error :invalid-raw-config]))))
 
 (defn parse-from-file
-  [file]
-  (cond
-    (not (string? file)) :invalid-file-path  ;; sanity check
-    :else (try
-            (parse-config (load-string (str "'" (slurp file))))
-            (catch Exception e
-              [:error :file-read-failed (ex-message e)]))))
+  ([]
+   (let [root (. System getProperty "user.dir")]
+     (parse-from-file (str root "/application.plj"))))
+
+  ([file]
+   (cond
+     (not (string? file)) :invalid-file-path  ;; sanity check
+     :else (try
+             (parse-config (load-string (str "'" (slurp file))))
+             (catch Exception e
+               [:error :file-read-failed (ex-message e)])))))
 
 (defn is-path? [data]
   (or

@@ -3,6 +3,19 @@
             [pleajure.core :refer [interpret get-at list-lookup
                                    parse-config parse-from-file]]))
 
+
+(def config [:config
+             [:first-name :Shrjoum
+              :last-name :Suzumov
+              :age 26
+              :gender :unrevealed
+              :favorite-color "the best color"
+              :likes [:cheese :tea :smalltalk]
+              :dislikes [[:first-name :Otar
+                          :last-name :Aperov]
+                         [:first-name :Lori
+                          :last-name :Dzu]]]])
+
 (deftest parsing-configs []
   (testing "That a config is effectively a list"
     (is (=
@@ -49,17 +62,11 @@
   (testing "That pleajure can parse a config file"
     (is (=
          (parse-from-file "resources/test.plj")
-         [:config
-          [:first-name :Shrjoum
-           :last-name :Suzumov
-           :age 26
-           :gender :unrevealed
-           :favorite-color "the best color"
-           :likes [:cheese :tea :smalltalk]
-           :dislikes [[:first-name :Otar
-                       :last-name :Aperov]
-                      [:first-name :Lori
-                       :last-name :Dzu]]]])))
+         config)))
+  (testing "That pleajure knows where to look for for the default config file"
+    (is (=
+         (parse-from-file)
+         config)))
   (testing "And gracefully fail on invalid ones"
     (is (=
          (parse-from-file "resources/broken-test.plj")
