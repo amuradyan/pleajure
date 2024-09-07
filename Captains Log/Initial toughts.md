@@ -1,5 +1,7 @@
 # Initial thoughts
 
+## NOTE: The information below is partial and outdated. See also [On expressive limits](On%20expressive%20limits.md)
+
 I want to be able to specify configs in LISP and parse them into Java objects, and here's how I see things.
 
 An entry is a list of two elements.

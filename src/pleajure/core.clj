@@ -8,11 +8,11 @@
           (interpret-number [form] [:number form])
           (interpret-list   [form] [:list (map (comp second interpret) form)])]
     (cond
-      (symbol? form) (interpret-symbol form)
-      (string? form) (interpret-string form)
-      (number? form) (interpret-number form)
-      (list? form) (interpret-list form)
-      :else [:error :unknown-form form])))
+      (symbol? form)  (interpret-symbol form)
+      (string? form)  (interpret-string form)
+      (number? form)  (interpret-number form)
+      (list?   form)  (interpret-list form)
+      :else           [:error :unknown-form form])))
 
 (defn parse-config
   [config]
@@ -47,14 +47,13 @@
                 [first-key & rk] path
                 rest-of-the-values (into [] rv)
                 rest-of-the-keys (into [] rk)]
-            (cond
-              (= first-key first-value)
+            (if (= first-key first-value)
               (if (empty? rest-of-the-keys)
                 (if (empty? rest-of-the-values)
                   :invalid-path
-                  (first rest-of-the-values))
+                  next-value)
                 (list-lookup next-value rest-of-the-keys))
-              :else (list-lookup rest-of-the-values path)))))
+              (list-lookup rest-of-the-values path)))))
 
 (defn is-config?
   [data]
