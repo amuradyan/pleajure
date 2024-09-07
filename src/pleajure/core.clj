@@ -68,6 +68,4 @@
   (cond
     (not (is-config? config)) :invalid-config   ;; sanity check
     (not (is-path? path)) :invalid-path         ;; sanity check
-    (empty? path) config
-    (empty? config) :invalid-path
     :else (list-lookup (second config) path)))

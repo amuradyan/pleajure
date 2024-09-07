@@ -72,7 +72,7 @@
     (testing "That pleajure can fetch a values at a given path"
       (is (=
            (get-at config [])
-           config))
+           data))
       (is (=
            (list-lookup data [:valid :nested :path])
            26))
