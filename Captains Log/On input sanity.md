@@ -10,3 +10,4 @@ On the other hand, how do you check that you fail predictably, when the input is
 
 1. `interpret` has the check at the bottom
 2. There's a [native contract solution](https://github.com/clojure/core.contracts), that should be checked
+3. see {:pre} and {:post} in [specs](https://clojure.org/guides/spec#_using_spec_for_validation)
