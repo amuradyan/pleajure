@@ -1,6 +1,11 @@
 # pleajure 👠
 
-[![pleajure-ci](https://github.com/amuradyan/pleajure/actions/workflows/clojure.yml/badge.svg)](https://github.com/amuradyan/pleajure/actions/workflows/clojure.yml) [![Clojars Project](https://img.shields.io/clojars/v/am.dekanat/pleajure.svg)](https://clojars.org/am.dekanat/pleajure)
+<!-- BADGES -->
+
+[![pleajure-ci](https://github.com/amuradyan/pleajure/actions/workflows/clojure.yml/badge.svg)](https://github.com/amuradyan/pleajure/actions/workflows/clojure.yml)
+[![Clojars Project](https://img.shields.io/clojars/v/am.dekanat/pleajure.svg)](https://clojars.org/am.dekanat/pleajure)
+
+<!-- BADGES -->
 
 A tool to write your configs in lists and atoms.
 
