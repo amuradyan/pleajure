@@ -1,7 +1,8 @@
 (ns pleajure.core-test
   (:require [clojure.test :refer [deftest is testing]]
             [pleajure.core :refer [interpret get-at list-lookup
-                                   parse-config parse-from-file]]))
+                                   parse-config parse-from-file
+                                   is-config?]]))
 
 
 (def config [:config
@@ -58,11 +59,20 @@
            (interpret '{:name "name"})
            [:error :unknown-form {:name "name"}])))))
 
+(deftest acknowledging-configs []
+  (testing "That pleajure can acknowledge a config"
+    (is (=
+         (is-config? (parse-from-file "resources/test.plj"))
+         true))
+    (is (=
+         (is-config? [:not-a-config])
+         false))))
+
 (deftest reading-config-from-file []
   (testing "That pleajure can parse a config file"
     (is (=
          (parse-from-file "resources/test.plj")
-         config)))
+         [:config [:one 1 :two 2 :three 3]])))
   (testing "That pleajure knows where to look for for the default config file"
     (is (=
          (parse-from-file)

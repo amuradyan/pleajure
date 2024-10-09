@@ -6,7 +6,7 @@
   (letfn [(interpret-symbol [form] [:keyword (keyword form)])
           (interpret-string [form] [:string form])
           (interpret-number [form] [:number form])
-          (interpret-list   [form] [:list (map (comp second interpret) form)])]
+          (interpret-list   [form] [:list (vec (map (comp second interpret) form))])]
     (cond
       (symbol? form)  (interpret-symbol form)
       (string? form)  (interpret-string form)
