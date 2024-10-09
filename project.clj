@@ -1,4 +1,4 @@
-(defproject am.dekanat/pleajure "0.0.4"
+(defproject am.dekanat/pleajure "0.1.0"
   :description "A LISP-like config notation"
   :url "https://amuradyan.github.io/pleajure/"
   :license {:name         "Zero-Clause BSD"
